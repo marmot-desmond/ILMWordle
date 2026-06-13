@@ -157,6 +157,16 @@ function restoreDailyProgress(puzzleDate) {
     gameState.startTime = saveData.startTime || null;
     gameState.endTime = saveData.endTime || null;
     gameState.outcome = saveData.outcome || null;
+    // fallback
+    if (!gameState.outcome){
+        const solved = gameState.guesses.includes(gameState.answer);
+
+        if (solved) {
+            gameState.outcome = "win";
+        } else if (gameState.guesses.length >= gameState.maxGuesses) {
+            gameState.outcome = "fail";
+        }
+    }
     gameState.currentGuess = "";
     gameState.letterStatuses = {};
 
@@ -193,6 +203,9 @@ function restoreDailyProgress(puzzleDate) {
 }
 
 function addLetter(key){
+    if (gameState.outcome){
+        return;
+    }
     if (!gameState.canGuess){
         return;
     }
@@ -208,6 +221,9 @@ function addLetter(key){
 }
 
 function removeLetter(){
+    if (gameState.outcome){
+        return;
+    }
     if (!gameState.canGuess){
         return;
     }
@@ -343,6 +359,9 @@ function titleEasterEgg(){
 }
 
 function submitGuess(){
+    if (gameState.outcome){
+        return;
+    }
     if (!gameState.answer){
         return;
     }
@@ -351,7 +370,9 @@ function submitGuess(){
         titleEasterEgg();
         return;
     }
-    if (!gameState.canGuess) return;
+    if (!gameState.canGuess){
+        return;
+    }
     if (gameState.currentGuess.length !== gameState.wordLength){
         return false;
     }
@@ -372,6 +393,7 @@ function submitGuess(){
     // win
     if (gameState.currentGuess === gameState.answer){
         gameState.canGuess = false;
+        gameState.outcome = "win";
         gameState.endTime = Date.now();
         const secondsTaken = Math.floor((gameState.endTime - gameState.startTime) / 1000);
 
@@ -386,6 +408,7 @@ function submitGuess(){
     //lose
     if (gameState.currentRow === gameState.maxGuesses){
         gameState.canGuess = false;
+        gameState.outcome = "fail";
         gameState.endTime = Date.now();
         const secondsTaken = Math.floor((gameState.endTime - gameState.startTime) / 1000);
 
