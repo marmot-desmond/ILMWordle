@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
+        <title>ILMWordle</title>
+        <link rel="stylesheet" href="./styles/styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Borel&family=Playwrite+DE+Grund:wght@100..400&display=swap" rel="stylesheet">
+        <link rel="icon" href="./assets/favicon.ico">
+    </head>
+    <body>
+        <header class="header">
+            <div class="title-container">
+                <p id="site-title" data-text="ILMWordle">
+                    <span>I</span>
+                    <span>L</span>
+                    <span>M</span>
+                    <span>W</span>
+                    <span class="title-o">O</span>
+                    <span>R</span>
+                    <span>D</span>
+                    <span>L</span>
+                    <span>E</span>
+                </p>
+            </div>
+                <button class="drk-md-btn" type="button"><img src="./assets/bulb-on.png" alt="A light bulb hanging from the top of the page."></button>
+        </header>
+        <main class="text-container">
+            <section class="game-area">
+                <p id="game-status">Loading daily puzzle...</p>
+                <section class="game-board" aria-label="Word guessing board"></section>
+
+                <aside id="game-message" class="game-message hidden" aria-live="polite">
+                    <h2 id="message-title"></h2>
+                    <p id="message-answer"></p>
+                    <p id="message-stats"></p>
+                </aside>
+            </section>
+            <section class="keyboard" aria-label="Game keyboard"></section>
+        </main>
+        <script src="./scripts/titleCursor.js"></script>
+        <script type="module" src="./scripts/wordleGame.js"></script>
+        <script src="./scripts/darkMode.js"></script>
+        <footer class="page-footer">
+        <p>Site made by <a href="https://www.marmot-desmond.dev">marmot-desmond.</a></p>
+    </footer>
+    </body>
+</html>

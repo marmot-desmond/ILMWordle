@@ -1,0 +1,315 @@
+:root {
+    --a: oklch(0.2853 0.074 39.04);
+    --background-color: oklch(0.956055 0.023378 44.3401);
+    --title-color: oklch(0.6179 0.1754 26.04);
+    --game-message: oklch(96.26% 0.02036 48.296 / 0.959);
+    --border: black;
+    --rev-border: white;
+    --wrong: oklch(63.343% 0.00007 271.152);
+    --correct: oklch(55.597% 0.15833 148.351);
+    --present: oklch(96.534% 0.16601 112.794);
+    --key-background: oklch(77.895% 0.03253 194.174);
+    --key-text: oklch(0.2184 0.0329 191.62);
+}
+
+:root.dark-theme {
+    --a: oklch(0.5375 0.1448 39.04);
+    --background-color: oklch(0.3055 0.015 269.19);
+    --title-color: oklch(0.3885 0.0319 260.98);
+    --game-message: oklch(35.656% 0.01519 312.922 / 0.900);
+    --border: white;
+    --rev-border: black;
+    --wrong: oklch(37.53% 0.00004 271.152);
+    --correct: oklch(41.905% 0.13032 145.398);
+    --present: oklch(49.232% 0.10267 101.026);
+    --key-background: oklch(41.051% 0.01411 196.799);
+    --key-text: oklch(74.908% 0.12866 190.32);
+}
+
+.header {
+    position: relative;
+    overflow: visible;
+}
+
+body {
+    transition: background-color 60ms ease;
+    background-color: var(--background-color);
+}
+
+a {
+    text-decoration: none;
+    color: var(--a);
+}
+
+.title-container {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.title-container span {
+    display: inline-block;
+    transition: transform 60ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#site-title {
+    transition: color 60ms ease;
+    font-family: "Borel", cursive;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 4rem;
+    color: var(--title-color);
+}
+
+.title-dialog {
+    border: 2px solid var(--border);
+    border-radius: 0.75rem;
+    background-color: var(--game-message);
+    color: var(--key-text);
+    padding: 1.5rem;
+}
+
+.title-dialog::backdrop {
+    background-color: oklch(0 0 0 / 0.35);
+}
+
+.title-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-family: "Segoe UI", sans-serif;
+}
+
+#title-input {
+    font: inherit;
+    padding: 0.5rem 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: 0.4rem;
+    background-color: var(--background-color);
+    color: var(--key-text);
+}
+
+.title-dialog-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.title-dialog-buttons button {
+    font: inherit;
+    border: 2px solid var(--border);
+    border-radius: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    background-color: var(--key-background);
+    color: var(--key-text);
+    cursor: pointer;
+}
+
+.text-container {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    flex-direction: column;
+    font-family: "Playwrite DE Grund", cursive;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    transition: color 60ms ease;
+    color: var(--key-text)
+}
+
+.drk-md-btn {
+    position: absolute;
+    top: -1.75rem;
+    right: 1rem;
+    border: none;
+    background: transparent;
+    padding: 0;
+    width: 6rem;
+    height: 6rem;
+    transition: top 0.25s ease, transform 0.25s ease;
+
+    cursor: pointer;
+}
+
+.drk-md-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.drk-md-btn:hover{
+    transform: translateY(.3rem);
+}
+
+.drk-md-btn.pull {
+    top: -1rem;
+}
+
+#game-status {
+    text-align: center;
+}
+
+.game-area {
+    position: relative;
+}
+
+.game-board {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.game-message {
+    position: absolute;
+    inset: 10% 5% 5% 5%;
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.25s ease, transform 0.25s ease, border 60ms ease, background-color 60ms ease;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    border: 2px solid var(--border);
+    background-color: var(--game-message);
+    text-align: center;
+}
+
+.game-message.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.95);
+}
+
+.guess-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.tile {
+    width: 3rem;
+    height: 3rem;
+    border: 2px solid var(--border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    transition: background-color 60ms ease;
+}
+
+.tile.wrong {
+    transition: background-color 60ms ease;
+    background-color: var(--wrong);
+}
+
+.tile.correct {
+    transition: background-color 60ms ease;
+    background-color: var(--correct);
+}
+
+.tile.present {
+    transition: background-color 60ms ease;
+    background-color: var(--present);
+}
+
+.keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.keyboard-row {
+    display: flex;
+    gap: 0.35rem;
+    justify-content: center;
+}
+
+.keyboard-row:nth-child(2){
+    transform: translateX(0.8rem);
+}
+
+.keyboard-row:nth-child(3){
+    transform: translateX(-1.6rem);
+}
+
+.key {
+    border: none;
+    border-radius: 0.4rem;
+    min-width: 2.25rem;
+    height: 3rem;
+    padding: 0 0.65rem;
+
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: transform 0.08s ease, background-color 60ms ease, color 60ms ease;
+
+    background-color: var(--key-background);
+    color: var(--key-text);
+
+    cursor: pointer;
+}
+
+.key:hover {
+    transform: translateY(-1px);
+}
+
+.key:active {
+    transform: translateY(1px) scale(0.65);
+}
+
+.key.wrong {
+    transition: background-color 60ms ease, color 60ms ease;
+    background-color: var(--wrong);
+    color: var(--rev-border);
+}
+
+.key.correct {
+    transition: background-color 60ms ease, color 60ms ease;
+    background-color: var(--correct);
+    color: var(--rev-border);
+}
+
+.key.present {
+    transition: background-color 60ms ease, color 60ms ease;
+    background-color: var(--present);
+    color: var(--border);
+}
+
+.key[data-key="Enter"],
+.key[data-key="Backspace"] {
+    min-width: 4.5rem;
+    font-size: 0.8rem;
+}
+
+.page-footer {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    flex-direction: column;
+    font-family: "Playwrite DE Grund", cursive;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    transition: color 60ms ease;
+    color: var(--key-text)
+}
