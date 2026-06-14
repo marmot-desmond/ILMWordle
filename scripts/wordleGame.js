@@ -20,47 +20,99 @@ function getDailyStorageKey(puzzleDate) {
     return `ilmwordle-${puzzleDate}`;
 }
 
+// fix puzzle loading forever
+function timeoutFix(promise, milliseconds) {
+    return Promise.race([
+        promise,
+        new Promise((_, reject) => {
+            setTimeout(() => {
+                reject(new Error("Puzzle load timed out"));
+            }, milliseconds);
+        })
+    ]);
+}
+
 const gameStatus = document.querySelector("#game-status");
 
+let isLoading = false;
 async function loadDailyPuzzle(){
+    if (isLoading){
+        return;
+    }
+    isLoading = true;
     gameState.canGuess = false;
 
-    const { data, error } = await supabase.rpc("get_or_create_daily_puzzle");
+    if (gameStatus){
+        gameStatus.textContent = "Loading daily puzzle...";
+    }
 
-    if (error) {
+    try {
+        const { data, error } = await timeoutFix(supabase.rpc("get_or_create_daily_puzzle"), 10000);
+    
+
+        if (error) {
+            console.error(error);
+
+            if (gameStatus) {
+                gameStatus.textContent = "Could not load today's puzzle. Please ping Shaggy in the Discord.";
+            }
+
+            return;
+        }
+
+        if (!data || data.length === 0) {
+            if (gameStatus) {
+                gameStatus.textContent = "No daily puzzle found";
+            }
+
+            return;
+        }
+
+        const puzzle = data[0];
+
+        gameState.answer = puzzle.word.toLowerCase();
+        gameState.puzzleDate = puzzle.puzzle_date;
+
+        let restored = false;
+
+        try {
+            restored = restoreDailyProgress(gameState.puzzleDate);
+        } catch (restoreError) {
+            console.error("Could not restore saved progress:", restoreError);
+
+            localStorage.removeItem(getDailyStorageKey(gameState.puzzleDate));
+            restored = false;
+        }
+
+        if (!restored){
+            gameState.canGuess = true;
+        }
+
+        if (gameStatus){
+            gameStatus.textContent = `Daily puzzle ${puzzle.puzzle_date}`;
+        }
+    } catch (error) {
         console.error(error);
 
-        if (gameStatus) {
-            gameStatus.textContent = "Could not load today's puzzle. Please ping Shaggy in the Discord.";
+        if (gameStatus){
+            gameStatus.textContent = "Could not load today's puzzle. Please ping Shaggy in the Discord."
         }
-
-        return;
+    } finally {
+        isLoading = false;
     }
-
-    if (!data || data.length === 0) {
-        if (gameStatus) {
-            gameStatus.textContent = "No daily puzzle found";
-        }
-
-        return;
-    }
-
-    const puzzle = data[0];
-
-    gameState.answer = puzzle.word.toLowerCase();
-    gameState.puzzleDate = puzzle.puzzle_date;
-
-    const restored = restoreDailyProgress(gameState.puzzleDate);
-
-    if (!restored){
-        gameState.canGuess = true;
-    }
-
-    if (gameStatus) {
-        gameStatus.textContent = `Daily puzzle ${puzzle.puzzle_date}`;
-    }
-
 }
+
+window.addEventListener("pageshow", () => {
+    if (!gameState.answer){
+        loadDailyPuzzle();
+    }
+});
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && !gameState.answer){
+        loadDailyPuzzle();
+    }
+})
 
 const board = document.querySelector(".game-board");
 
